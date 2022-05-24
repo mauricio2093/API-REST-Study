@@ -58,6 +58,17 @@ switch( strtoupper($_SERVER['REQUEST_METHOD'])) {
         echo json_encode($books);
         break;
     case 'PUT':
+        case 'PUT':
+            //validamos que el recurso buscado exista
+            if (!empty($resourceId) && array_key_exists($resourceId, $books)){
+                // Tomamos la entrada cruda
+                $json = file_get_contents('php://input');
+                 // transformamos el json recibido a un nuevo elemento del arreglo
+                $books[$resourceId] = json_decode($json, true);
+                // Retornamos la coleccion modificada en formato json
+                echo json_encode($books);
+            }
+            break;
         break;
     case 'DELETE':
         break;
@@ -70,5 +81,5 @@ switch( strtoupper($_SERVER['REQUEST_METHOD'])) {
 // Terminal 2 ejecutar 
 // curl http://localhost:8000 -v
 // curl http://localhost:8000/\?resource_type\=books
-// curl http://localhost:8000/\?resource_type\=books | jq
-// curl -X 'POST' http://localhost:8000/books -d '{"titulo":"Nuevo Libro","id_autor":1,"id_genero":2}'
+// curl http://localhost:8000/\?resource_type\=books | jq       - se debe descargar el comando jq e instalar en path
+// curl -X "POST" http://localhost:8000/books -d "{ \"titulo\":\"Nuevo Libro\",\"id_autor\": 1,\"id_genero\": 2}"     - doble comilla porq windows no soporta comilla simple

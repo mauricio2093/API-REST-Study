@@ -56,7 +56,30 @@ app.post('/books', (req, res) => {
         return res.json({ status: 'Failed', error: 'error no data' });
     }
 })
+app.put('/books/:id', (req, res) => {
+    const paramId = req.params.id
+    // Verifica si se ha puesto un id y que este exista
+    if(paramId && books[paramId]) {
+        const book = books[paramId];
+  
+      // Modificar solo los datos que se hayan enviado
+        book.title = req.body.title || book.title;
+        book.id_author = req.body.id_author || book.id_author;
+        book.id_genre = req.body.id_genre || book.id_genre;
+      // Esta sintaxis dice: 
+      // "Es igual al dato enviado (req.body.title), 
+      // Y si está vacío (||) dejar el valor por defecto (book.title)"
+  
+      // Guardar el libro modificado
+        books[paramId] = book;
 
+      // Envia un ok, el libro modificado y la colección de libros
+        res.send({ status: 'ok', book, books })
+    } else {
+      // En caso de no encontrar, devuelve error
+        res.json({ status: 'Failed', error: 'missing or invalid param: id' });
+    }
+})
 // Iniciador del servidor, en el puerto 5000
 app.listen(5000, () => {
     console.log('server on port 5000');

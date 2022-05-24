@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -104,5 +105,29 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func postBooks(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("POST"))
+	var book Book
+
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "<h1>Bad Request</h1>")
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "<h1>Bad Request</h1>")
+		return
+	}
+
+	if err := json.Unmarshal(body, &book); err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "<h1>Bad Request, error on unmarshal</h1>")
+		return
+	}
+
+	Books = append(Books, book)
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, len(Books)-1)
 }

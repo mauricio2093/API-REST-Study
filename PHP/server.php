@@ -57,20 +57,26 @@ switch( strtoupper($_SERVER['REQUEST_METHOD'])) {
         echo array_keys( $books )[count($books) -1];
         echo json_encode($books);
         break;
+    
     case 'PUT':
-        case 'PUT':
-            //validamos que el recurso buscado exista
-            if (!empty($resourceId) && array_key_exists($resourceId, $books)){
-                // Tomamos la entrada cruda
-                $json = file_get_contents('php://input');
-                 // transformamos el json recibido a un nuevo elemento del arreglo
-                $books[$resourceId] = json_decode($json, true);
-                // Retornamos la coleccion modificada en formato json
-                echo json_encode($books);
-            }
-            break;
+        //validamos que el recurso buscado exista
+        if (!empty($resourceId) && array_key_exists($resourceId, $books)){
+            // Tomamos la entrada cruda
+            $json = file_get_contents('php://input');
+             // transformamos el json recibido a un nuevo elemento del arreglo
+            $books[$resourceId] = json_decode($json, true);
+            // Retornamos la coleccion modificada en formato json
+            echo json_encode($books);
+        }
         break;
+        
     case 'DELETE':
+        if (!empty($resourceId) && array_key_exists($resourceId, $books)){
+            // Eliminamos el recurso
+            unset( $books[ $resourceId]);    
+            // Aquí verificamos que los cambios se han realizado  
+            echo json_encode($books);      
+        }
         break;
 }
 

@@ -113,6 +113,20 @@ func putBook(w http.ResponseWriter, r *http.Request, id int) {
 	fmt.Fprint(w, "OK")
 }
 
+func deleteBook(w http.ResponseWriter, r *http.Request, id int) {
+	if id >= len(Books) {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(w, "<h1>Not Found</h1>")
+		return
+	}
+
+	Books = append(Books[:id], Books[id+1:]...)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "OK")
+
+}
+
+
 func books(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

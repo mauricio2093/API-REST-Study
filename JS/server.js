@@ -80,6 +80,20 @@ app.put('/books/:id', (req, res) => {
         res.json({ status: 'Failed', error: 'missing or invalid param: id' });
     }
 })
+app.delete('/books/:id', (req, res) => {
+    const paramId = req.params.id
+    // Verifica si se ha puesto un id y que este exista
+    if(paramId && books[paramId]) {
+      // Remueve el indice enviado y lo guarda en "deleted_book"
+        const deleted_book = books.splice(paramId - 1, 1);
+    
+        // Envia un ok, el libro eliminado y la colección de libros actual
+        res.send({ status: 'ok', deleted_book, books })
+        } else {
+        // En caso de no encontrar, devuelve error
+        res.json({ status: 'Failed', error: 'missing or invalid param: id' });
+        }
+    })
 // Iniciador del servidor, en el puerto 5000
 app.listen(5000, () => {
     console.log('server on port 5000');

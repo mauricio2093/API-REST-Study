@@ -1,37 +1,63 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const router = express.Router();
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 
-var app = express();
+// Middlewares para recibir JSON a traves del API en express
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(router);
+// Parametros permitidos para "resource_type"
+const allowedResources = [
+    'books',
+    'authors',
+    'genres'
+];
 
+// Array de objetos que contienen los libros
 const books = [
-    {
-        titulo : 'Lo que el viento se llevo',
-        id_autor : '2',
-        id_genero : '2'
-    },
-    {
-        titulo : 'La Iliada',
-        id_autor : '1',
-        id_genero : '1'
-    },
-    {
-        titulo : 'La Odisea',
-        id_autor : '1',
-        id_genero : '1'
-    }]
+    { title: 'Lo que el viento se llevo', id_author: 2, id_genre: 2 },
+    { title: 'La Iliada', id_author: 1, id_genre: 1 },
+    { title: 'La odisea', id_author: 1, id_genre: 1 }
+];
 
+app.get('/', (req, res) => {
+  // Obtiene "resource_type" de los parámetros del URL
+    const resourceType = req.query.resource_type;
 
-router.get("/", function(req, res) {
-    console.log(req.query);
-    console.log(req.body);
-
-    res.json(books)
+  // Verifica si existe este parámetro en nuestro arreglo de permitidos
+    if(allowedResources.indexOf(resourceType) === -1) {
+        // Devuelve error si no se encuentra
+        return res.json({ status: 'Failed', error: 'missing or invalid param: resource_type' });    
+    }
+  // Si sale todo bien, devuelve un ok junto a los libros
+    res.json({ status: 'ok', books });
 });
 
-app.listen(3000);
+app.post('/books', (req, res) => {
+  // Verifica si se envian datos por formulario
+    if(req.body) {
+    // Verifica si falta "title", "id_author" o "id_genre"
+        if(!req.body.title || !req.body.id_author || !req.body.id_genre) {
+        // Devuelve error si falta alguno
+            return res.json({ status: 'failed', error: 'missing or invalid: data' });
+        }
+    // Inserta un nuevo objeto al array, y devuelve el id insertado 
+    // (característica javascript)
+        const insertCount = books.push({
+            title: req.body.title,
+            id_author: req.body.id_author,
+            id_genre: req.body.id_genre
+        })
 
-console.log("La aplicacion esta escuchando en http://localhost:3000");
+        // Devuelve ok y el id insertado si todo salió bien
+        res.json({ status: 'ok', insert_id: insertCount - 1, books })
+    } else {
+        // Devuelve un error si no se envian datos por formulario
+        return res.json({ status: 'Failed', error: 'error no data' });
+    }
+})
+
+// Iniciador del servidor, en el puerto 5000
+app.listen(5000, () => {
+    console.log('server on port 5000');
+});

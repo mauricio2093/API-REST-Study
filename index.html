@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API | REST</title>
+</head>
+<body>
+    <h1>API-REST</h1>
+    <h2>¿Qué es una API ?</h2>
+    <li>Aplication</li>
+    <li>Programming</li>
+    <li>Interface</li>
+    <p>(interfaz de programación de aplicaciones), se trata de reglas que definen como interactúan dos <br>
+        aplicaciones y es un concepto que existe hace tiempo en el mundo de la programación.</p>
+
+        <h2>HTTP (Hypertext Transfer Protocol)</h2> :
+        <p>protocolo de comunicacion entre aplicaciones. basado en el intercambio de texto</p>
+        <p>Protocolo: conjunto de reglas en las que se van a comunicar dos entidades, en este caso dos computadoras</p>
+
+        <p>El modelo TCP/IP nos permite esta comunicacion entre computadoras</p>
+
+        <h3>Como funciona el protocolo:</h3>
+        <ol>
+            <li>El cliente envia una peticion,se transmite por internet</li>
+            <li> El servidor recibe la peticion y genera una respuesta, la envia</li>
+            <li>El cliente recibe la respuesta (y si estamos en el navegador interpreta lo recibido ) </li>
+        </ol>
+        <h2>REST ( Representational State Transfer)</h2>
+        <p>
+            REST es un acrónimo que significa transferencia de estado representacional en español. <br>
+            Le agrega una capa muy delgada de complejidad y abstracción a HTTP. Mientras que HTTP es transferencia de archivos, <br>
+            REST se basa en la transferencia de recursos.<br>
+
+            <h3>Cómo funciona REST</h3>
+            REST es un conjunto de principios que definen la forma en que se deben crear, leer, actualizar y eliminar los datos. <br>
+            Es una arquitectura conocida como cliente-servidor, en la que el servidor y el cliente actúan de forma independiente, <br>
+            siempre y cuando la interfaz sea la misma al procesar una solicitud y una respuesta, que son los elementos esenciales. <br>
+            El servidor expone la API REST y el cliente hace uso de ella. El servidor almacena la información y la pone a disposición del usuario, <br>
+            mientras que el cliente toma la información y la muestra al usuario o la utiliza para realizar posteriores peticiones de más información.<br>
+
+
+            <h3>REST es muy útil cuando:</h3>
+
+            <li>Las interacciones son simples.</li>
+            <li>Los recursos de tu hardware son limitados.</li>
+            <h3>Qué es una API RESTful</h3>
+            Una API RESTful es una interfaz que utiliza estos principios para comunicarse hacia y desde un servidor. Está diseñada con los conceptos de REST. <br>
+            El principio más importante en las APIs RESTful es el uso de los métodos HTTP:<br>
+
+            <li></li>
+            <li>POST</li>
+            <li>PUT</li>
+            <li>DELETE</li><br>
+            Estos métodos son empleados por los clientes para crear, manipular y eliminar datos en los servidores, respectivamente.
+
+            <h3> Elementos de una API RESTful</h3>
+            <li>Recurso: todo dentro de una API RESTful debe ser un recurso.</li>
+            <li>URI: los recursos en REST siempre se manipulan a partir de la URI, identificadores universales de recursos.</li> 
+            <li>Acción: todas las peticiones a tu API RESTful deben estar asociadas a uno de los verbos de HTTP: GET para obtener un recurso, <br>
+                POST para escribir un recurso, PUT para modificar un recurso y DELETE para borrarlo.
+            <h3>Qué es una API</h3>
+            La palabra API es un acrónimo que significa Interfaz de Programación de Aplicaciones (Application Programming Interface).<br>
+            Es un sistema que funciona como intermediario entre diferentes aplicaciones de software y su función es permitir que estas <br>
+            aplicaciones puedan comunicarse entre sí. Cada vez que usas una app como WhatsApp, Instagram o Facebook, estás usando una API sin saberlo.
+        </p>
+        <p>
+            REST Permite mandar json, xml, binarios (imágenes, documentos), text, etc. <br>
+            en cambio con SOAP que solo permite la transmisión de datos en formato XML, json es mucho mas liviano y rapido en su procesamiento <br>
+            dado que es interpretado de forma natural por javascript.<br>
+            <br>REST como SOAP son bastante capaces de atender grandes volúmenes de información, yo creo hay que analizar que es más conveniente para uno, <br> 
+            tanto en tiempo de desarrollo, tecnologías y sobre que dispositivos o tipos de APP se van a consumir, SOAP se utiliza mas en aplicaciones financieras.
+        </p>
+        <p>
+            <h3>Una petición REST completa se basa en:</h3>
+
+            <li>URL(Dominio, protocolo)</li>
+            <li>verbo HTTP (PUT, POST, GET, DELETE)</li>
+            
+            <h3>¿Cuándo conviene usar REST?</h3>
+    
+            <li>Interacciones simples (agregar recursos, quitarlos, modificarlos)</li>
+            <li>Recursos limitados</li>
+            
+            <h3>¿Cuándo NO conviene usar REST?</h3>
+            
+            <li>cuando las interacciones son más complejas, ejemplo cuándo necesitamos que el servidor aporte más lógica.</li>
+        </p>
+        
+</body>
+</html>

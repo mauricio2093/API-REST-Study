@@ -58,6 +58,8 @@ func book(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		getBook(w, r, id)
+	case http.MethodPut:
+		putBook(w, r, id)
 	case http.MethodDelete:
 		w.Write([]byte("DELETE"))
 	}
@@ -84,6 +86,33 @@ func getBook(w http.ResponseWriter, r *http.Request, id int) {
 	fmt.Fprint(w, string(response))
 }
 
+func putBook(w http.ResponseWriter, r *http.Request, id int) {
+	var book Book
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "<h1>Bad Request</h1>")
+		return
+	}
+
+	if err := json.Unmarshal(body, &book); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "<h1>Bad Request</h1>")
+		return
+	}
+
+	if id >= len(Books) {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(w, "<h1>Not Found</h1>")
+		return
+	}
+
+	Books[id] = book
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "OK")
+}
+
 func books(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -101,17 +130,12 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(w, string(respose))
 }
 
 func postBooks(w http.ResponseWriter, r *http.Request) {
 	var book Book
-
-	if err := r.ParseForm(); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "<h1>Bad Request</h1>")
-		return
-	}
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

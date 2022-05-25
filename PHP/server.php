@@ -1,5 +1,35 @@
 <?php
-// CLASE 06 - Exponer datos a traves de HTTP GET
+
+/* $user = array_key_exists('PHP_AUTH_USER', $_SERVER)? $_SERVER['PHP_AUTH_USER']: '';
+$pwd = array_key_exists('PHP_AUTH_PW', $_SERVER)? $_SERVER['PHP_AUTH_PW']: '';
+
+if ( $user !== 'mauro' || $pwd !== '1234'){
+    echo "Error de autentificación. Ingrese sus datos.";
+    die;
+} */
+
+if(
+    !array_key_exists('HTTP_X_HASH', $_SERVER) ||
+    !array_key_exists('HTTP_X_TIMESTAMP', $_SERVER) ||
+    !array_key_exists('HTTP_X_UID', $_SERVER) 
+){
+    echo "Error de autentificación. Ingrese sus datos.";
+    die;
+}
+
+list($hash, $uid, $timestamp) =[
+    $_SERVER['HTTP_X_HASH'],
+    $_SERVER['HTTP_X_UID'],
+    $_SERVER['HTTP_X_TIMESTAMP'],
+
+];
+$secret = 'Asegure su contraseña';
+
+$newHash = sha1($uid, $timestamp,$secret);
+
+if($newHash !== $hash){
+    die;
+}
 // Definimos los recursos disponibles
 $allowedResourceType = [
     'books',
@@ -69,7 +99,7 @@ switch( strtoupper($_SERVER['REQUEST_METHOD'])) {
             echo json_encode($books);
         }
         break;
-        
+
     case 'DELETE':
         if (!empty($resourceId) && array_key_exists($resourceId, $books)){
             // Eliminamos el recurso

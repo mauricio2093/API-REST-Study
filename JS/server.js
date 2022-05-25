@@ -2,6 +2,98 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+/* const bookAuthenticator = (req, res, next) => {  
+    // Definimos nuestra variable que contendra la informacion de auth
+        let authorization = [];
+    
+        // Verificamos si se envian headers de autenticación por HTTP
+        if(req.headers.authorization) {
+        // req.headers.authorization es encodeado en base64
+        // Tal como: "Basic bHVjbmVvbmN0OjEyMzQ="
+        // Con un Buffer lo decodeamos: Buffer.from('string','base64')
+        authorization = Buffer
+            // Separamos en dos arreglos, para usar solo el string encodeado
+            // ["Basic", "bHVjbmVvbmN0OjEyMzQ="]
+            .from(req.headers.authorization.split(" ")[1], 'base64')
+            // Lo transformamos en utf-8
+            // "lucneonct:1234"
+            .toString('utf-8')
+            // Lo separamos por el ":" en un array
+            // ["lucneonct", "1234"]
+            .split(':');
+        }
+    
+        // Obtiene username del primer indice del arreglo y la contraseña del segundo
+        const authUser = authorization[0];
+        const authPassword = authorization[1];
+    
+        // Verificamos si los datos no coinciden con nuestro usuario hardcodeado
+        if( authUser !== "Mauro" && authPassword !== "1234") {
+        // Rompe la cadena y retorna un 403 Forbidden
+        return res.status(403).json({ status: 'Forbidden: missing or invalid auth' });
+        }
+    
+        // Seguimos con nuestro código una vez que todo esté bien
+        next()
+    } */
+
+// Middleware de autenticación
+const bookAuthenticator = (req, res, next) => {  
+    // Obtiene la autenticación como "username:password" 
+    // Y lo convierte en un array como ["username", "password"]
+    let authorization = [];
+
+    // Verificamos si se envian headers de autenticación HTTP
+    if(req.headers.authorization) {
+      // req.headers.authorization es encodeado en base64, tal como: "Basic bHVjbmVvbmN0OjEyMzQ="
+      // Con un Buffer lo decodeamos: Buffer.from('string','base64')
+        authorization = Buffer
+        // Separamos en dos arreglos, para usar solo el string encodeado
+        // ["Basic", "bHVjbmVvbmN0OjEyMzQ="]
+        .from(req.headers.authorization.split(" ")[1], 'base64')
+        // Lo transformamos en utf-8
+        // "lucneonct:1234"
+        .toString('utf-8')
+        // Lo separamos por el ":" en un array
+        // ["lucneonct", "1234"]
+        .split(':');
+    } 
+    // Verificamos si se envian headers de autenticación HMAC
+    else if(req.headers['x-hash']) {
+      // Recibe los parametros enviados en req.headers
+      // Si no hay se lo deja en blanco
+        const hash = req.headers['x-hash'] || '';
+        const uid = req.headers['x-uid'] || '';
+        const timestamp = req.headers['x-timestamp'] || '';
+    
+      // Creamos nuestro secret
+        const secret = 'Sh!! No se lo cuentes a nadie!';
+  
+      // Usamos el paquete de crypto que viene con NodeJS para crear el SHA1
+        const hmac = crypto.createHmac('sha1', secret);
+      // Pasamos nuestro UID y TIMESTAMP al método update
+        hmac.update( uid + timestamp );
+  
+      // Comparamos que el hash enviado y el creado sean iguales
+      // Usamos hmac.digest('hex') para que nos muestre el hash en hexadecimal
+        if(hash === hmac.digest('hex')) {
+        // Rellenamos nuestro arreglo de autorización para pasar la validación posterior
+        authorization = ['Lucneonct', '1234'];
+        }
+    }
+  
+    // Obtiene username del primer indice del arreglo y la contraseña del segundo
+    const authUser = authorization[0];
+    const authPassword = authorization[1];
+  
+    // Verificamos si los datos no coinciden con nuestro usuario hardcodeado
+    if( authUser !== "Lucneonct" && authPassword !== "1234") {
+      // Rompe la cadena y retorna un 403 Forbidden
+        return res.status(403).json({ status: 'Forbidden: missing or invalid auth' });
+    }
+  
+    next()
+}
 // Middlewares para recibir JSON a traves del API en express
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -20,7 +112,7 @@ const books = [
     { title: 'La odisea', id_author: 1, id_genre: 1 }
 ];
 
-app.get('/', (req, res) => {
+app.get('/', bookAuthenticator, (req, res) => {
   // Obtiene "resource_type" de los parámetros del URL
     const resourceType = req.query.resource_type;
 
